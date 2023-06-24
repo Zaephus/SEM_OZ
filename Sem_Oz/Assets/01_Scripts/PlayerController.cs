@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using UnityEngine.U2D.Animation;
 
 public class PlayerController : MonoBehaviour {
 
@@ -14,6 +15,9 @@ public class PlayerController : MonoBehaviour {
     private Transform target;
     [SerializeField]
     private Transform itemTransform;
+
+    [SerializeField]
+    private SpriteResolver reactionSprites;
 
     private NPCBehaviour targetedNPC = null;
 
@@ -28,7 +32,8 @@ public class PlayerController : MonoBehaviour {
     private void Update() {
 
         if(Input.GetMouseButtonDown(0)) {
-
+            reactionSprites.SetCategoryAndLabel("Face", "Normal");
+            reactionSprites.ResolveSpriteToSpriteRenderer();
             pathData.EndOfPathReached -= DestinationReached;
 
             Vector3 clickedPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -62,6 +67,8 @@ public class PlayerController : MonoBehaviour {
         Debug.Log("reached");
         if(targetedNPC != null) {
             if(targetedNPC.hasGivingItem && heldItemType == ItemType.None) {
+                reactionSprites.SetCategoryAndLabel("Face", "Exclamation");
+                reactionSprites.ResolveSpriteToSpriteRenderer();
                 heldItemType = targetedNPC.currentItem;
                 heldItemObject = targetedNPC.currentItemObject;
                 heldItemObject.transform.parent = itemTransform;
@@ -69,7 +76,8 @@ public class PlayerController : MonoBehaviour {
                 targetedNPC.LoseGivingItem();
             }
             else if(targetedNPC.awaitingItem && heldItemType == targetedNPC.currentItem) {
-
+                reactionSprites.SetCategoryAndLabel("Face", "Finish" );
+                reactionSprites.ResolveSpriteToSpriteRenderer();
             }
         }
         pathData.EndOfPathReached -= DestinationReached;

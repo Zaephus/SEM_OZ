@@ -191,6 +191,7 @@ MonoBehaviour:
   heldItemType: 0
   target: {fileID: 8636273669513900577}
   itemTransform: {fileID: 6851025711257020383}
+  reactionSprites: {fileID: 7799288023619544200}
 --- !u!114 &4692358472589671140
 MonoBehaviour:
   m_ObjectHideFlags: 0
