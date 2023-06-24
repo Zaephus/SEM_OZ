@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using Pathfinding;
+
 using TMPro;
 
 using UnityEngine;
@@ -12,6 +14,7 @@ public class NPCBehaviour : MonoBehaviour
     public bool hasGivingItem = false;
     public bool awaitingItem = false;
     public bool hasTakingItem = false;
+    public bool leaving = false;
     public Transform itemSlot;
     public Transform speechBubble;
     public SpriteRenderer speechItem;
@@ -21,15 +24,24 @@ public class NPCBehaviour : MonoBehaviour
     [HideInInspector] public bool giving;
     [HideInInspector] public ItemType currentItem;
     [HideInInspector] public GameObject currentItemObject;
+    [HideInInspector] public Transform waitPosition;
+
+    private NPCHandler handler;
+    private AIDestinationSetter pathTarget;
+    private AIPath pathingData;
 
     private void Awake()
     {
+        handler = GameObject.Find("GameManager").GetComponent<NPCHandler>();
+        pathTarget = transform.parent.GetComponent<AIDestinationSetter>();
+        pathingData = transform.parent.GetComponent<AIPath>();
         speechBubble.gameObject.SetActive(false);
     }
 
     private void Start()
     {
-        //join the scene
+        int rnd = Random.Range(0, 5);
+        pathTarget.target = handler.waitLocations[rnd];
 
         if (giving)
         {
@@ -39,9 +51,41 @@ public class NPCBehaviour : MonoBehaviour
 
     private void Update()
     {
+        if (hasGivingItem && pathingData.reachedDestination)
+        {
+            ShowGivingItem();
+        }
+
+        if (leaving && pathingData.reachedDestination)
+        {
+            Destroy(transform.parent.gameObject);
+        }
+
+        Debug.Log(pathingData.reachedDestination);
+
         if (Input.GetKeyDown(KeyCode.L))
         {
             LoseGivingItem();
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            GetTakingItem(ItemType.Milk, GameObject.Find("FauxItem"));
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            GetTakingItem(ItemType.Plank, GameObject.Find("FauxItem"));
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            GetTakingItem(ItemType.Solar_Panel, GameObject.Find("FauxItem"));
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            GetTakingItem(ItemType.Book, GameObject.Find("FauxItem"));
         }
 
         if (!hasGivingItem)
@@ -51,22 +95,38 @@ public class NPCBehaviour : MonoBehaviour
                 CreateTakingItemRequest();
             }
 
-            if (!taking)
+            if (!taking && !leaving)
             {
-                //leave the scene
+                LeaveScene();
             }
         }
+
+        if (hasTakingItem && !leaving)
+        {
+            LeaveScene();
+        }
+    }
+
+    private void LeaveScene()
+    {
+        leaving = true;
+        int rnd = Random.Range(0, 5);
+        pathTarget.target = handler.startendPositions[rnd];
     }
 
     private void CreateGivingItem()
     {
         int itemToHold = Random.Range(1, 6);
         currentItem = (ItemType)itemToHold;
-        speechBubble.gameObject.SetActive(true);
-        giveOrTakeText.text = "!";
         currentItemObject = Instantiate(prefabItem, itemSlot);
         speechItem.color = currentItemObject.GetComponent<Item>().SetType(currentItem);
         hasGivingItem = true;
+    }
+
+    private void ShowGivingItem()
+    {
+        speechBubble.gameObject.SetActive(true);
+        giveOrTakeText.text = "!";
     }
 
     public void LoseGivingItem()
@@ -104,7 +164,14 @@ public class NPCBehaviour : MonoBehaviour
         }
     }
 
-    public void GetTakingItem()
+    public void GetTakingItem(ItemType _itemType, GameObject _item)
     {
+        if (_itemType == currentItem)
+        {
+            hasTakingItem = true;
+            _item.transform.parent = itemSlot;
+            _item.transform.localPosition = Vector3.zero;
+            speechBubble.gameObject.SetActive(false);
+        }
     }
 }

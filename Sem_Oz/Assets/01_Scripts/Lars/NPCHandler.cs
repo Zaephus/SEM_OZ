@@ -7,8 +7,8 @@ using UnityEngine;
 public class NPCHandler : MonoBehaviour
 {
     public GameObject prefabNPC;
-    public List<Vector2> startendPositions = new List<Vector2>();
-    public List<Vector2> waitLocations = new List<Vector2>();
+    public List<Transform> startendPositions = new List<Transform>();
+    public List<Transform> waitLocations = new List<Transform>();
 
     private float npcSpawnMaxTime = 15.0f;
     private float npcSpawnMinMaxTime = 8.0f;
@@ -35,12 +35,11 @@ public class NPCHandler : MonoBehaviour
     private void CreateNPC(bool _giving)
     {
         int rnd = UnityEngine.Random.Range(0, 5);
-        GameObject newNPC = Instantiate(prefabNPC, startendPositions[rnd], Quaternion.identity);
-        NPCBehaviour behaviour = newNPC.GetComponent<NPCBehaviour>();
+        GameObject newNPC = Instantiate(prefabNPC, startendPositions[rnd].position, Quaternion.identity);
+        NPCBehaviour behaviour = newNPC.GetComponentInChildren<NPCBehaviour>();
 
         behaviour.giving = _giving ? _giving : Convert.ToBoolean(UnityEngine.Random.Range(0, 2));
         behaviour.taking = Convert.ToBoolean(UnityEngine.Random.Range(0, 2));
 
-        //behaviour.
     }
 }
