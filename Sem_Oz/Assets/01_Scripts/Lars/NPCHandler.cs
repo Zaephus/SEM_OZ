@@ -41,5 +41,10 @@ public class NPCHandler : MonoBehaviour
         behaviour.giving = _giving ? _giving : Convert.ToBoolean(UnityEngine.Random.Range(0, 2));
         behaviour.taking = Convert.ToBoolean(UnityEngine.Random.Range(0, 2));
 
+        //Make a random npc pass through the park (immersion lol)
+        if (!behaviour.giving && !behaviour.taking)
+        {
+            CreateNPC(false);
+        }
     }
 }

@@ -70,22 +70,27 @@ public class NPCBehaviour : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.M))
         {
-            GetTakingItem(ItemType.Milk, GameObject.Find("FauxItem"));
+            GetTakingItemTest(ItemType.Milk, GameObject.Find("FauxItem"));
         }
 
         if (Input.GetKeyDown(KeyCode.P))
         {
-            GetTakingItem(ItemType.Plank, GameObject.Find("FauxItem"));
+            GetTakingItemTest(ItemType.Plank, GameObject.Find("FauxItem"));
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            GetTakingItem(ItemType.Solar_Panel, GameObject.Find("FauxItem"));
+            GetTakingItemTest(ItemType.Solar_Panel, GameObject.Find("FauxItem"));
         }
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            GetTakingItem(ItemType.Book, GameObject.Find("FauxItem"));
+            GetTakingItemTest(ItemType.Book, GameObject.Find("FauxItem"));
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            GetTakingItemTest(ItemType.Tomato_Plant, GameObject.Find("FauxItem"));
         }
 
         if (!hasGivingItem)
@@ -139,7 +144,7 @@ public class NPCBehaviour : MonoBehaviour
     private void CreateTakingItemRequest()
     {
         awaitingItem = true;
-        int itemToHold = Random.Range(1, 6);
+        int itemToHold = RandomNoRepeat();
         currentItem = (ItemType)itemToHold;
         speechBubble.gameObject.SetActive(true);
         giveOrTakeText.text = "?";
@@ -164,7 +169,29 @@ public class NPCBehaviour : MonoBehaviour
         }
     }
 
-    public void GetTakingItem(ItemType _itemType, GameObject _item)
+    private int RandomNoRepeat()
+    {
+        int itemToHold = Random.Range(1, 6);
+        if (currentItem == (ItemType)itemToHold)
+        {
+            itemToHold = RandomNoRepeat();
+        }
+
+        return itemToHold;
+    }
+
+    public void GetTakingItem(GameObject _item)
+    {
+        if (_item.GetComponent<Item>().itemType == currentItem)
+        {
+            hasTakingItem = true;
+            _item.transform.parent = itemSlot;
+            _item.transform.localPosition = Vector3.zero;
+            speechBubble.gameObject.SetActive(false);
+        }
+    }
+
+    private void GetTakingItemTest(ItemType _itemType, GameObject _item)
     {
         if (_itemType == currentItem)
         {

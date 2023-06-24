@@ -7,6 +7,7 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     private SpriteRenderer sr;
+    [HideInInspector] public ItemType itemType;
 
     private void Awake()
     {
@@ -20,6 +21,8 @@ public class Item : MonoBehaviour
 
     public Color SetType(ItemType _item)
     {
+        itemType = _item;
+
         switch (_item)
         {
             case ItemType.None:
