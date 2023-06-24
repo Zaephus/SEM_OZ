@@ -6,6 +6,7 @@ using Pathfinding;
 using TMPro;
 
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 
 public class NPCBehaviour : MonoBehaviour
 {
@@ -30,12 +31,23 @@ public class NPCBehaviour : MonoBehaviour
     private AIDestinationSetter pathTarget;
     private AIPath pathingData;
 
+    [SerializeField]
+    private SpriteResolver reactionSprites;
+    [SerializeField]
+    private SpriteResolver npcSprites;
+    private string[] npcNames = new string[]{
+        "NPC_1", "NPC_2"
+    };
+
+
     private void Awake()
     {
         handler = FindAnyObjectByType<NPCHandler>();
         pathTarget = transform.parent.GetComponent<AIDestinationSetter>();
         pathingData = transform.parent.GetComponent<AIPath>();
         speechBubble.gameObject.SetActive(false);
+        npcSprites.SetCategoryAndLabel("NPC Sprites", npcNames[Random.Range(0, npcNames.Length)]);
+        npcSprites.ResolveSpriteToSpriteRenderer();
     }
 
     private void Start()
@@ -129,7 +141,8 @@ public class NPCBehaviour : MonoBehaviour
     {
         speechBubble.gameObject.SetActive(true);
         canGiveItem = true;
-        giveOrTakeText.text = "!";
+        reactionSprites.SetCategoryAndLabel("Face", "Exclamation");
+        reactionSprites.ResolveSpriteToSpriteRenderer();
     }
 
     public void LoseGivingItem()
@@ -144,7 +157,8 @@ public class NPCBehaviour : MonoBehaviour
         int itemToHold = RandomNoRepeat();
         currentItem = (ItemType)itemToHold;
         speechBubble.gameObject.SetActive(true);
-        giveOrTakeText.text = "?";
+        reactionSprites.SetCategoryAndLabel("Face", "Question");
+        reactionSprites.ResolveSpriteToSpriteRenderer();
 
         switch (currentItem)
         {
