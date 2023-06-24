@@ -2,68 +2,77 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class PlayerController : MonoBehaviour {
 
     [SerializeField]
-    private float moveSpeed = 5.0f;
-
-    [SerializeField]
-    private float stoppingDistance = 0.1f;
-
-    [SerializeField]
     private ItemType heldItemType = ItemType.None;
+    private GameObject heldItemObject = null;
 
-    private bool isMoving = false;
+    [SerializeField]
+    private Transform target;
+    [SerializeField]
+    private Transform itemTransform;
+
+    private NPCBehaviour targetedNPC = null;
+
+    // private AIDestinationSetter pathSetter;
+    private AIPath pathData;
     
-    private void Start() {}
+    private void Start() {
+        // pathSetter = transform.GetComponent<AIDestinationSetter>();
+        pathData = transform.GetComponent<AIPath>();
+    }
 
     private void Update() {
 
         if(Input.GetMouseButtonDown(0)) {
 
-            Vector3 target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            pathData.EndOfPathReached -= DestinationReached;
+
+            Vector3 clickedPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
             if(Physics.Raycast(ray, out hit)) {
-                if(hit.collider.GetComponent<NPCController>() != null) {
-                    NPCController npc = hit.collider.GetComponent<NPCController>();
-                    if(npc.hasItem) {
-                        StartCoroutine(MoveToPosition(new Vector3(target.x, target.y, transform.position.z), npc));
+                if(hit.collider.GetComponent<NPCBehaviour>() != null) {
+                    targetedNPC = hit.collider.GetComponent<NPCBehaviour>();
+                    if(targetedNPC.canGiveItem || targetedNPC.awaitingItem) {
+                        pathData.EndOfPathReached += DestinationReached;
                     }
+                    else {
+                        targetedNPC = null;
+                    }
+                }
+                else {
+                    targetedNPC = null;
                 }
             }
 
-            StartCoroutine(MoveToPosition(new Vector3(target.x, target.y, transform.position.z)));
+            target.position = clickedPos;
+            pathData.SearchPath();
+
         }
         
     }
 
-    private IEnumerator MoveToPosition(Vector3 _target, NPCController _npc = null) {
+    private void DestinationReached() {
+        Debug.Log("reached");
+        if(targetedNPC != null) {
+            if(targetedNPC.hasGivingItem && heldItemType == ItemType.None) {
+                heldItemType = targetedNPC.currentItem;
+                heldItemObject = targetedNPC.currentItemObject;
+                heldItemObject.transform.parent = itemTransform;
+                heldItemObject.transform.position = itemTransform.position;
+                targetedNPC.LoseGivingItem();
+            }
+            else if(targetedNPC.awaitingItem && heldItemType == targetedNPC.currentItem) {
 
-        if(stoppingDistance <= 0.0f) {
-            stoppingDistance = Mathf.Epsilon;
+            }
         }
-        
-        isMoving = false;
-        yield return new WaitForEndOfFrame();
-        isMoving = true;
-
-        while(isMoving && Vector3.Distance(_target, transform.position) > stoppingDistance) {
-            transform.position = Vector3.MoveTowards(transform.position, _target, moveSpeed * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
-        }
-
-        if(_npc != null) {
-            PickupItem();
-        }
-
-    }
-
-    private void PickupItem() {
-
+        pathData.EndOfPathReached -= DestinationReached;
     }
     
 }

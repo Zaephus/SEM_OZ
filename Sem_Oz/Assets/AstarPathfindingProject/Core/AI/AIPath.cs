@@ -162,6 +162,9 @@ namespace Pathfinding {
 		/// <summary>Helper which calculates points along the current path</summary>
 		protected PathInterpolator interpolator = new PathInterpolator();
 
+		public System.Action DestinationReached;
+		public System.Action EndOfPathReached;
+
 		#region IAstarAI implementation
 
 		/// <summary>\copydoc Pathfinding::IAstarAI::Teleport</summary>
@@ -196,8 +199,19 @@ namespace Pathfinding {
 			}
 		}
 
+		private bool m_ReachedEndOfPath;
 		/// <summary>\copydoc Pathfinding::IAstarAI::reachedEndOfPath</summary>
-		public bool reachedEndOfPath { get; protected set; }
+		public bool reachedEndOfPath {
+			get {
+				return m_ReachedEndOfPath;
+			}
+			protected set {
+				m_ReachedEndOfPath = value;
+				if(m_ReachedEndOfPath) {
+					EndOfPathReached?.Invoke();
+				}
+			}
+		}
 
 		/// <summary>\copydoc Pathfinding::IAstarAI::hasPath</summary>
 		public bool hasPath {
@@ -269,6 +283,7 @@ namespace Pathfinding {
 		/// So when the agent is close to the destination this method will typically be called every <see cref="repathRate"/> seconds.
 		/// </summary>
 		public virtual void OnTargetReached () {
+			DestinationReached?.Invoke();
 		}
 
 		/// <summary>

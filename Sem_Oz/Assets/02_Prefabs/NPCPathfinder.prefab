@@ -119,7 +119,7 @@ Transform:
   m_Children:
   - {fileID: 1721922128172788640}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1869232097215480088
 MonoBehaviour:
@@ -432,6 +432,7 @@ GameObject:
   - component: {fileID: 1721922128172788640}
   - component: {fileID: 2442879257340532236}
   - component: {fileID: 4154380671224368874}
+  - component: {fileID: 7938746147991753257}
   m_Layer: 0
   m_Name: NPC
   m_TagString: Untagged
@@ -529,6 +530,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   hasGivingItem: 0
+  canGiveItem: 0
   awaitingItem: 0
   hasTakingItem: 0
   leaving: 0
@@ -540,6 +542,27 @@ MonoBehaviour:
   currentItem: 0
   currentItemObject: {fileID: 0}
   waitPosition: {fileID: 0}
+--- !u!65 &7938746147991753257
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883592659077184507}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &9050391644527093204
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ public class NPCBehaviour : MonoBehaviour
     public GameObject prefabItem;
     public List<GameObject> items = new List<GameObject>();
     public bool hasGivingItem = false;
+    public bool canGiveItem = false;
     public bool awaitingItem = false;
     public bool hasTakingItem = false;
     public bool leaving = false;
@@ -31,7 +32,7 @@ public class NPCBehaviour : MonoBehaviour
 
     private void Awake()
     {
-        handler = GameObject.Find("GameManager").GetComponent<NPCHandler>();
+        handler = FindAnyObjectByType<NPCHandler>();
         pathTarget = transform.parent.GetComponent<AIDestinationSetter>();
         pathingData = transform.parent.GetComponent<AIPath>();
         speechBubble.gameObject.SetActive(false);
@@ -57,7 +58,7 @@ public class NPCBehaviour : MonoBehaviour
             Destroy(transform.parent.gameObject);
         }
 
-        Debug.Log(pathingData.reachedDestination);
+        // Debug.Log(pathingData.reachedDestination);
 
         if (Input.GetKeyDown(KeyCode.L))
         {
@@ -112,7 +113,7 @@ public class NPCBehaviour : MonoBehaviour
     {
         leaving = true;
         int rnd = Random.Range(0, 5);
-        pathTarget.target = handler.startendPositions[rnd];
+        pathTarget.target = handler.startEndPositions[rnd];
     }
 
     private void CreateGivingItem()
@@ -127,13 +128,13 @@ public class NPCBehaviour : MonoBehaviour
     private void ShowGivingItem()
     {
         speechBubble.gameObject.SetActive(true);
+        canGiveItem = true;
         giveOrTakeText.text = "!";
     }
 
     public void LoseGivingItem()
     {
         hasGivingItem = false;
-        currentItemObject.transform.parent = null;
         speechBubble.gameObject.SetActive(false);
     }
 
