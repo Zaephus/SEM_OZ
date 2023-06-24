@@ -21,7 +21,6 @@ public class NPCBehaviour : MonoBehaviour
     public TMP_Text giveOrTakeText;
 
     [HideInInspector] public bool taking;
-    [HideInInspector] public bool giving;
     [HideInInspector] public ItemType currentItem;
     [HideInInspector] public GameObject currentItemObject;
     [HideInInspector] public Transform waitPosition;
@@ -43,10 +42,7 @@ public class NPCBehaviour : MonoBehaviour
         int rnd = Random.Range(0, 5);
         pathTarget.target = handler.waitLocations[rnd];
 
-        if (giving)
-        {
-            CreateGivingItem();
-        }
+        CreateGivingItem();
     }
 
     private void Update()

@@ -537,7 +537,6 @@ MonoBehaviour:
   speechItem: {fileID: 7696754478481740084}
   giveOrTakeText: {fileID: 5034961119416096476}
   taking: 0
-  giving: 0
   currentItem: 0
   currentItemObject: {fileID: 0}
   waitPosition: {fileID: 0}

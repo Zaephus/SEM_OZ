@@ -16,7 +16,7 @@ public class NPCHandler : MonoBehaviour
 
     private void Start()
     {
-        CreateNPC(true);
+        CreateNPC();
     }
 
     private void FixedUpdate()
@@ -28,23 +28,16 @@ public class NPCHandler : MonoBehaviour
             npcSpawnTimer = npcSpawnMaxTime;
             npcSpawnMaxTime -= 0.1f;
             npcSpawnMaxTime = Mathf.Max(npcSpawnMaxTime, npcSpawnMinMaxTime);
-            CreateNPC(false);
+            CreateNPC();
         }
     }
 
-    private void CreateNPC(bool _giving)
+    private void CreateNPC()
     {
         int rnd = UnityEngine.Random.Range(0, 5);
         GameObject newNPC = Instantiate(prefabNPC, startendPositions[rnd].position, Quaternion.identity);
         NPCBehaviour behaviour = newNPC.GetComponentInChildren<NPCBehaviour>();
 
-        behaviour.giving = _giving ? _giving : Convert.ToBoolean(UnityEngine.Random.Range(0, 2));
         behaviour.taking = Convert.ToBoolean(UnityEngine.Random.Range(0, 2));
-
-        //Make a random npc pass through the park (immersion lol)
-        if (!behaviour.giving && !behaviour.taking)
-        {
-            CreateNPC(false);
-        }
     }
 }
