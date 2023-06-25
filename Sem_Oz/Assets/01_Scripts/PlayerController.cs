@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
                 reactionSprites.SetCategoryAndLabel("Face", "Normal");
                 reactionSprites.ResolveSpriteToSpriteRenderer();
 
-                heldItemObject.transform.parent = targetedContainer.transform;
+                heldItemObject.transform.parent = targetedContainer.targetPosition;
                 heldItemObject.transform.localPosition = Vector3.zero;
 
                 targetedContainer.items.Add(heldItemObject);
