@@ -756,6 +756,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3922864161335702908}
   - component: {fileID: 7696754478481740084}
+  - component: {fileID: 134927482595774501}
   m_Layer: 0
   m_Name: SpeechItem
   m_TagString: Untagged
@@ -772,7 +773,7 @@ Transform:
   m_GameObject: {fileID: 9050391644527093204}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.34, y: 0.21, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3012958528259469390}
@@ -820,7 +821,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 2
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -830,3 +831,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &134927482595774501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9050391644527093204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e69a57887eabb7f4e97a232e2b7066be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemOptions:
+  - {fileID: 21300000, guid: ad1d232b15035754c9c34994cafa0fb8, type: 3}
+  - {fileID: 21300000, guid: ef2a5b2bbe1ab7b4287b5d64de30fdc5, type: 3}
+  - {fileID: 21300000, guid: b4764eada2b172544a4a06795f4504cc, type: 3}
+  - {fileID: 21300000, guid: 4eeea29d9c07bea4eb3ce6d4c7d64bbc, type: 3}
+  - {fileID: 21300000, guid: 5d50764087fb5a94885e0486b84ee7c2, type: 3}
+  itemType: 0

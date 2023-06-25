@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
+    public List<Sprite> itemOptions = new List<Sprite>();
     private SpriteRenderer sr;
     [HideInInspector] public ItemType itemType;
 
@@ -14,12 +15,7 @@ public class Item : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
     }
 
-    private void Update()
-    {
-
-    }
-
-    public Color SetType(ItemType _item)
+    public Sprite SetType(ItemType _item)
     {
         itemType = _item;
 
@@ -28,24 +24,24 @@ public class Item : MonoBehaviour
             case ItemType.None:
                 break;
             case ItemType.Milk:
-                sr.color = Color.red;
+                sr.sprite = itemOptions[0];
                 break;
             case ItemType.Plank:
-                sr.color = Color.blue;
+                sr.sprite = itemOptions[1];
                 break;
             case ItemType.Solar_Panel:
-                sr.color = Color.green;
+                sr.sprite = itemOptions[2];
                 break;
             case ItemType.Book:
-                sr.color = Color.cyan;
+                sr.sprite = itemOptions[3];
                 break;
             case ItemType.Tomato_Plant:
-                sr.color = Color.magenta;
+                sr.sprite = itemOptions[4];
                 break;
             default:
                 break;
         }
 
-        return sr.color;
+        return sr.sprite;
     }
 }

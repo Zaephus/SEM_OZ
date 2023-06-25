@@ -103,7 +103,7 @@ public class NPCBehaviour : MonoBehaviour {
         int itemToHold = Random.Range(1, 6);
         currentItem = (ItemType)itemToHold;
         currentItemObject = Instantiate(prefabItem, itemSlot);
-        speechItem.color = currentItemObject.GetComponent<Item>().SetType(currentItem);
+        speechItem.sprite = currentItemObject.GetComponent<Item>().SetType(currentItem);
         hasGivingItem = true;
     }
 
@@ -131,19 +131,19 @@ public class NPCBehaviour : MonoBehaviour {
 
         switch (currentItem) {
             case ItemType.Milk:
-                speechItem.color = Color.red;
+                speechItem.sprite = speechItem.GetComponent<Item>().itemOptions[0];
                 break;
             case ItemType.Plank:
-                speechItem.color = Color.blue;
+                speechItem.sprite = speechItem.GetComponent<Item>().itemOptions[1];
                 break;
             case ItemType.Solar_Panel:
-                speechItem.color = Color.green;
+                speechItem.sprite = speechItem.GetComponent<Item>().itemOptions[2];
                 break;
             case ItemType.Book:
-                speechItem.color = Color.cyan;
+                speechItem.sprite = speechItem.GetComponent<Item>().itemOptions[3];
                 break;
             case ItemType.Tomato_Plant:
-                speechItem.color = Color.magenta;
+                speechItem.sprite = speechItem.GetComponent<Item>().itemOptions[4];
                 break;
         }
     }
