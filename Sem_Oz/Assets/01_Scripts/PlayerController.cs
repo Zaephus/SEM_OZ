@@ -5,7 +5,8 @@ using UnityEngine;
 using Pathfinding;
 using UnityEngine.U2D.Animation;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
 
     [SerializeField]
     private ItemType heldItemType = ItemType.None;
@@ -20,20 +21,24 @@ public class PlayerController : MonoBehaviour {
     private SpriteResolver reactionSprites;
 
     private NPCBehaviour targetedNPC = null;
+    private Container targetedContainer = null;
 
     private AIPath pathData;
-    
-    private void Start() {
+
+    private void Start()
+    {
         pathData = transform.GetComponent<AIPath>();
     }
 
-    private void Update() {
+    private void Update()
+    {
 
-        if(Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(0))
+        {
 
             reactionSprites.SetCategoryAndLabel("Face", "Normal");
             reactionSprites.ResolveSpriteToSpriteRenderer();
-            
+
             pathData.EndOfPathReached -= DestinationReached;
 
             Vector3 clickedPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -41,18 +46,33 @@ public class PlayerController : MonoBehaviour {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if(Physics.Raycast(ray, out hit)) {
-                if(hit.collider.GetComponent<NPCBehaviour>() != null) {
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.GetComponent<NPCBehaviour>() != null)
+                {
                     targetedNPC = hit.collider.GetComponent<NPCBehaviour>();
-                    if(targetedNPC.canGiveItem || targetedNPC.awaitingItem) {
+                    if (targetedNPC.canGiveItem || targetedNPC.awaitingItem)
+                    {
                         pathData.EndOfPathReached += DestinationReached;
                     }
-                    else {
+                    else
+                    {
                         targetedNPC = null;
                     }
                 }
-                else {
+                else
+                {
                     targetedNPC = null;
+                }
+
+                if (hit.collider.GetComponent<Container>() != null)
+                {
+                    targetedContainer = hit.collider.GetComponent<Container>();
+                    pathData.EndOfPathReached += DestinationReached;
+                }
+                else
+                {
+                    targetedContainer = null;
                 }
             }
 
@@ -61,23 +81,55 @@ public class PlayerController : MonoBehaviour {
 
         }
 
-        if(Input.GetKeyDown(KeyCode.X) && heldItemType != ItemType.None) {
+        if (Input.GetKeyDown(KeyCode.X) && heldItemType != ItemType.None)
+        {
             DropItem();
         }
-        
+
     }
 
-    private void DropItem() {
+    private void DropItem()
+    {
         Destroy(heldItemObject);
         heldItemType = ItemType.None;
     }
 
-    private void DestinationReached() {
-        
-        if(targetedNPC != null) {
+    private void DestinationReached()
+    {
+        if (targetedContainer != null)
+        {
+            if (heldItemObject != null && heldItemType == targetedContainer.acceptedTypeForContainer)
+            {
+                reactionSprites.SetCategoryAndLabel("Face", "Normal");
+                reactionSprites.ResolveSpriteToSpriteRenderer();
 
-            if(targetedNPC.hasGivingItem && heldItemType == ItemType.None) {
+                heldItemObject.transform.parent = targetedContainer.transform;
+                heldItemObject.transform.localPosition = Vector3.zero;
 
+                targetedContainer.items.Add(heldItemObject);
+
+                heldItemObject = null;
+                heldItemType = ItemType.None;
+            }
+            else if (targetedContainer.items.Count > 0)
+            {
+                reactionSprites.SetCategoryAndLabel("Face", "Exclamation");
+                reactionSprites.ResolveSpriteToSpriteRenderer();
+
+                heldItemType = targetedContainer.items[targetedContainer.items.Count - 1].GetComponent<Item>().itemType;
+
+                heldItemObject = targetedContainer.items[targetedContainer.items.Count - 1];
+                heldItemObject.transform.parent = itemTransform;
+                heldItemObject.transform.localPosition = Vector3.zero;
+
+                targetedContainer.items.RemoveAt(targetedContainer.items.Count - 1);
+            }
+        }
+
+        if (targetedNPC != null)
+        {
+            if (targetedNPC.hasGivingItem && heldItemType == ItemType.None)
+            {
                 reactionSprites.SetCategoryAndLabel("Face", "Exclamation");
                 reactionSprites.ResolveSpriteToSpriteRenderer();
 
@@ -88,23 +140,18 @@ public class PlayerController : MonoBehaviour {
                 heldItemObject.transform.localPosition = Vector3.zero;
 
                 targetedNPC.LoseGivingItem();
-
             }
-            else if(targetedNPC.awaitingItem && heldItemType == targetedNPC.currentItem) {
-
+            else if (targetedNPC.awaitingItem && heldItemType == targetedNPC.currentItem)
+            {
                 reactionSprites.SetCategoryAndLabel("Face", "Finish");
                 reactionSprites.ResolveSpriteToSpriteRenderer();
 
                 targetedNPC.GetTakingItem(heldItemObject);
 
                 heldItemType = ItemType.None;
-
             }
-
         }
 
         pathData.EndOfPathReached -= DestinationReached;
-
     }
-    
 }
