@@ -47,3 +47,6 @@ TagManager:
   - name: Robot
     uniqueID: 4253035297
     locked: 0
+  - name: Item
+    uniqueID: 1038082191
+    locked: 0

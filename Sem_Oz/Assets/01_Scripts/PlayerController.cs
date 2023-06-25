@@ -21,19 +21,19 @@ public class PlayerController : MonoBehaviour {
 
     private NPCBehaviour targetedNPC = null;
 
-    // private AIDestinationSetter pathSetter;
     private AIPath pathData;
     
     private void Start() {
-        // pathSetter = transform.GetComponent<AIDestinationSetter>();
         pathData = transform.GetComponent<AIPath>();
     }
 
     private void Update() {
 
         if(Input.GetMouseButtonDown(0)) {
+
             reactionSprites.SetCategoryAndLabel("Face", "Normal");
             reactionSprites.ResolveSpriteToSpriteRenderer();
+            
             pathData.EndOfPathReached -= DestinationReached;
 
             Vector3 clickedPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -60,27 +60,51 @@ public class PlayerController : MonoBehaviour {
             pathData.SearchPath();
 
         }
+
+        if(Input.GetKeyDown(KeyCode.X) && heldItemType != ItemType.None) {
+            DropItem();
+        }
         
     }
 
+    private void DropItem() {
+        Destroy(heldItemObject);
+        heldItemType = ItemType.None;
+    }
+
     private void DestinationReached() {
-        Debug.Log("reached");
+        
         if(targetedNPC != null) {
+
             if(targetedNPC.hasGivingItem && heldItemType == ItemType.None) {
+
                 reactionSprites.SetCategoryAndLabel("Face", "Exclamation");
                 reactionSprites.ResolveSpriteToSpriteRenderer();
+
                 heldItemType = targetedNPC.currentItem;
+
                 heldItemObject = targetedNPC.currentItemObject;
                 heldItemObject.transform.parent = itemTransform;
-                heldItemObject.transform.position = itemTransform.position;
+                heldItemObject.transform.localPosition = Vector3.zero;
+
                 targetedNPC.LoseGivingItem();
+
             }
             else if(targetedNPC.awaitingItem && heldItemType == targetedNPC.currentItem) {
-                reactionSprites.SetCategoryAndLabel("Face", "Finish" );
+
+                reactionSprites.SetCategoryAndLabel("Face", "Finish");
                 reactionSprites.ResolveSpriteToSpriteRenderer();
+
+                targetedNPC.GetTakingItem(heldItemObject);
+
+                heldItemType = ItemType.None;
+
             }
+
         }
+
         pathData.EndOfPathReached -= DestinationReached;
+
     }
     
 }
